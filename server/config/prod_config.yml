@@ -1,0 +1,29 @@
+# Client listener
+client:
+  listen_ip: "0.0.0.0"
+  listen_port: 20000
+
+# Monitor listener
+monitor:
+  listen_ip: "0.0.0.0"
+  listen_port: 8888
+  token: "123"
+
+# HTTP listener
+http:
+  listen_ip: "0.0.0.0"
+  listen_port: 12345
+
+# Log configuration
+log:
+  file_dir: "/home/dev1/whisp/server/data/logs/"
+  file_name: "whisp_log"
+  binary_package: false  # 0 转换为 false，1 为 true
+
+# MySQL configuration
+mysql:
+  server_ip: "127.0.0.1"
+  server_port: 6603
+  user: "root"
+  password: "talko_root"
+  database: "talko_server"

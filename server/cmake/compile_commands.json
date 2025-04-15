@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/dev1/whisp/server/build/src",
+  "command": "/usr/bin/c++ -DPROJ_PATH=\\\"/home/dev1/whisp/server\\\" -DWHISP_BUILD_MODE=0 -I/home/dev1/whisp/server/src/common/include -I/home/dev1/whisp/server/src/util/include -g -O0 -std=gnu++14 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -o CMakeFiles/whisp_server_proc.dir/main.cpp.o -c /home/dev1/whisp/server/src/main.cpp",
+  "file": "/home/dev1/whisp/server/src/main.cpp",
+  "output": "src/CMakeFiles/whisp_server_proc.dir/main.cpp.o"
+},
+{
+  "directory": "/home/dev1/whisp/server/build/src/common",
+  "command": "/usr/bin/c++ -DPROJ_PATH=\\\"/home/dev1/whisp/server\\\" -DWHISP_BUILD_MODE=0 -I/home/dev1/whisp/server/src/common/include -isystem /home/dev1/whisp/server/third_party/linux/x86_64/yaml-cpp/include -g -O0 -std=gnu++14 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -o CMakeFiles/common.dir/src/config_parse.cpp.o -c /home/dev1/whisp/server/src/common/src/config_parse.cpp",
+  "file": "/home/dev1/whisp/server/src/common/src/config_parse.cpp",
+  "output": "src/common/CMakeFiles/common.dir/src/config_parse.cpp.o"
+},
+{
+  "directory": "/home/dev1/whisp/server/build/src/common",
+  "command": "/usr/bin/c++ -DPROJ_PATH=\\\"/home/dev1/whisp/server\\\" -DWHISP_BUILD_MODE=0 -I/home/dev1/whisp/server/src/common/include -isystem /home/dev1/whisp/server/third_party/linux/x86_64/yaml-cpp/include -g -O0 -std=gnu++14 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -o CMakeFiles/common.dir/src/log.cpp.o -c /home/dev1/whisp/server/src/common/src/log.cpp",
+  "file": "/home/dev1/whisp/server/src/common/src/log.cpp",
+  "output": "src/common/CMakeFiles/common.dir/src/log.cpp.o"
+},
+{
+  "directory": "/home/dev1/whisp/server/build/src/common",
+  "command": "/usr/bin/c++ -DPROJ_PATH=\\\"/home/dev1/whisp/server\\\" -DWHISP_BUILD_MODE=0 -I/home/dev1/whisp/server/src/common/include -isystem /home/dev1/whisp/server/third_party/linux/x86_64/yaml-cpp/include -g -O0 -std=gnu++14 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -o CMakeFiles/common.dir/src/platform.cpp.o -c /home/dev1/whisp/server/src/common/src/platform.cpp",
+  "file": "/home/dev1/whisp/server/src/common/src/platform.cpp",
+  "output": "src/common/CMakeFiles/common.dir/src/platform.cpp.o"
+},
+{
+  "directory": "/home/dev1/whisp/server/build/src/util",
+  "command": "/usr/bin/c++ -DPROJ_PATH=\\\"/home/dev1/whisp/server\\\" -DWHISP_BUILD_MODE=0 -I/home/dev1/whisp/server/src/util/include -g -O0 -std=gnu++14 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -o CMakeFiles/util.dir/src/daemon_run.cpp.o -c /home/dev1/whisp/server/src/util/src/daemon_run.cpp",
+  "file": "/home/dev1/whisp/server/src/util/src/daemon_run.cpp",
+  "output": "src/util/CMakeFiles/util.dir/src/daemon_run.cpp.o"
+}
+]
