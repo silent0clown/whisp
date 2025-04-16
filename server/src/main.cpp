@@ -2,6 +2,8 @@
 #include "daemon_run.h"
 #include "macros.h"
 #include "config_parse.h"
+#include "mysqlx_factory.h"
+#include "mysqlx_pool.h"
 
 
 #include <iostream>
@@ -117,7 +119,7 @@ int main(int argc, char* argv[])
     LOAD_CONFIG_VALUE(Wconfig.mysql_config.password, db_passpwd);
     LOAD_CONFIG_VALUE(Wconfig.mysql_config.database, db_table);
 
-    LOG_INFO("[MAIN] Load mysql config: addr = %s, port = %d, user = %s, password = %s, database = %s",
+    LOG_INFO("[main] Load mysql config: addr = %s, port = %d, user = %s, password = %s, database = %s",
         db_server.c_str(),
         db_port,
         db_user.c_str(),
@@ -126,12 +128,12 @@ int main(int argc, char* argv[])
 
      // 创建工厂对象
     // WhispConcreteDbConnFactory factory(db_server, db_port, db_user, db_passpwd, db_table, 5);
+    auto factory = std::make_unique<MySQLXFactory>(db_server, db_port, db_user, db_passpwd, db_table);
+
+    auto pool = std::make_shared<MySQLXPool>(std::move(factory), 5);
     
-     // 创建 MySQL 连接池
-    //  auto mysqlConnPool = factory.create_mysqlconn_pool();
- 
-     // 连接数据库
-    //  factory.connect();
+    // 监听端口
+
 
 
     // 析构

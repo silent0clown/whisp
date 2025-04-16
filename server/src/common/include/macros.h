@@ -99,3 +99,8 @@
 #define WHISP_BUILD_MODE_DEBUG          (0)
 #define WHISP_BUILD_MODE_RELEASE        (1)
 #define WHISP_BUILD_MODE_TEST           (2)
+
+
+typedef int SOCKET;
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1

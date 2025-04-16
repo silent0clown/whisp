@@ -3,6 +3,8 @@
 # 添加子模块
 # add_subdirectory(network)
 add_subdirectory(common)
+add_subdirectory(db)
+add_subdirectory(network)
 # add_subdirectory(core)
 # add_subdirectory(infra)
 add_subdirectory(util)
@@ -14,6 +16,8 @@ add_executable(whisp_server_proc main.cpp)
 target_link_libraries(whisp_server_proc PRIVATE
         # network 
         common
+        db
+        network
         # core
         # infra
         util
