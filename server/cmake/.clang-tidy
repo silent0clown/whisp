@@ -1,0 +1,21 @@
+Checks: >
+  clang-analyzer-*,
+  bugprone-*,
+  performance-*,
+  readability-*,
+  modernize-*,
+  portability-*,
+  cppcoreguidelines-*,
+  -clang-analyzer-cplusplus.InnerPointer,  # 可选关闭
+  -modernize-use-trailing-return-type,     # 不强制尾返回
+  -cppcoreguidelines-avoid-magic-numbers   # 允许魔法数（可自行决定）
+
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+FormatStyle: file
+CheckOptions:
+  - { key: readability-identifier-naming.VariableCase, value: camelBack }
+  - { key: readability-identifier-naming.FunctionCase, value: camelBack }
+  - { key: readability-identifier-naming.ClassCase, value: CamelCase }
+  - { key: modernize-use-nullptr.NullMacros, value: 'NULL' }
+  - { key: modernize-parameter-name.MinLength, value: 2 }  # 参数名最短为2个字符

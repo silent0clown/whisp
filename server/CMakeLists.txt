@@ -31,7 +31,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     )
 endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)   # 开启后，其生成的文件compile_commands.json，包含所有编译单元所执行的指令
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++)   # 开启后，其生成的文件compile_commands.json，包含所有编译单元所执行的指令
 # 设置PROJECT_ROOT_PATH
 set(PROJ_ROOT_PATH "${CMAKE_SOURCE_DIR}")
 message(STATUS "Project root path: ${PROJ_ROOT_PATH}")
@@ -97,37 +97,8 @@ endif()
 set(THIRD_PARTY_PATH ${PROJ_ROOT_PATH}/third_party/${SYSTEM}/${ARCHITECTURE})
 message(STATUS "THIRD_PARTY_PATH: ${THIRD_PARTY_PATH}")
 
-# include_directories(${THIRD_PARTY_PATH}/openssl/include)
-# include_directories(${THIRD_PARTY_PATH}/mysqlconn/include)
-# include_directories(${THIRD_PARTY_PATH}/libuv/include)
-# include_directories(${THIRD_PARTY_PATH}/uwebsockets/include)
-# include_directories(${THIRD_PARTY_PATH}/uwebsockets/uSockets/include)
-# include_directories(${THIRD_PARTY_PATH}/yaml-cpp/include)
-# include_directories(${THIRD_PARTY_PATH}/jsoncpp/include)
-# include_directories(${THIRD_PARTY_PATH}/zlib/include)
-
-# # 添加库路径
-# add_library(crypto SHARED IMPORTED)
-# add_library(ssl SHARED IMPORTED)
-# add_library(mysqlcppconn8 SHARED IMPORTED)
-# add_library(libuv SHARED IMPORTED)
-# add_library(usocket STATIC IMPORTED)
-# add_library(yaml-cpp STATIC IMPORTED)
-# add_library(jsoncpp STATIC IMPORTED)
-# add_library(zlib STATIC IMPORTED)
-# set_target_properties(crypto PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/openssl/lib/libcrypto.so)
-# set_target_properties(ssl PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/openssl/lib/libssl.so)
-# set_target_properties(mysqlcppconn8 PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/mysqlconn/lib/libmysqlcppconn8.so.2.8.0.33)
-# set_target_properties(usocket PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/uwebsockets/uSockets/libuSockets.a)
-# set_target_properties(yaml-cpp PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/yaml-cpp/lib/libyaml-cpp.a)
-# set_target_properties(jsoncpp PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/jsoncpp/lib/libjsoncpp.a)
-# set_target_properties(zlib PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/zlib/lib/libz.a)
-
 # 添加主项目子文件夹
 add_subdirectory(src)
-
-# 可执行程序包含头文件路径
-# target_include_directories(whisp_server_proc PRIVATE src)
 
 # 如果启用测试，添加测试子目录
 option(BUILD_TESTS "Build tests" OFF)

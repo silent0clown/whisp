@@ -1,0 +1,43 @@
+{
+    // 指定 clangd 可执行文件的路径（如果在系统路径中可直接使用 "clangd"）
+    "clangd.path": "clangd",
+    // 告诉 clangd 去哪里找 compile_commands.json（你之前设置为 cmake/）
+    "clangd.arguments": [
+        "--background-index", // 启用后台索引
+        "--compile-commands-dir=server/cmake",
+        // "--style=file", // 这告诉 clangd 使用项目中的 .clang-format 文件
+        "--header-insertion=never", // 不自动加头文件（更清爽）
+        "--all-scopes-completion", // 允许在所有作用域中进行代码补全
+        "--completion-style=detailed", // 更详细的补全提示
+        "--pch-storage=memory", // 提高速度（缓存预编译头）
+        "--background-index", // 后台索引整个工程
+        "--clang-tidy", // 开启 clang-tidy 检查
+        // "fallback-style=none", // 表示不要使用默认风格，优先使用 .clang-format
+        "--log=verbose", // 输出详细的日志信息
+        "--pretty" // 漂亮的输出格式
+    ],
+    // 默认禁用 VS 的自带 C++ 智能提示（防止冲突）
+    "C_Cpp.intelliSenseEngine": "disabled",
+    // 文件保存时自动格式化（依赖 clang-format）
+    "editor.formatOnSave": true,
+    "[cpp]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+    // 推荐使用 UTF-8
+    "files.encoding": "utf8",
+    // 搜索过滤
+    "search.exclude": {
+        "**/third_party/**": true,
+        "**/node_modules/**": true,
+        "**/*.min.js": true
+    },
+    "files.exclude": {
+        "**/third_party/**": true,
+        "**/node_modules/**": true
+    },
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active",
+    "editor.semanticHighlighting.enabled": true,
+    "editor.inlayHints.enabled": "on",
+    "clangd.inlayHints.enable": true
+}

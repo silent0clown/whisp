@@ -1,1 +1,3 @@
 server/output/*
+server/data/*
+server/cmake/.cache/*

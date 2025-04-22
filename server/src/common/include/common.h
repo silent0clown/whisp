@@ -15,7 +15,6 @@
 
 
 #include <cstdint>
-#include <string>
 #include <memory>
 
 namespace whisker {
@@ -41,11 +40,11 @@ namespace constants {
 
 // ==================== 错误码 ====================
 enum class ErrorCode : uint16_t {
-    OK                  = 0,
-    INVALID_ARGUMENT    = 1001,
-    NETWORK_ERROR       = 2001,
-    DB_OPERATION_FAILED = 3001,
-    // ... 其他错误码
+  OK = 0,
+  INVALID_ARGUMENT = 1001,
+  NETWORK_ERROR = 2001,
+  DB_OPERATION_FAILED = 3001,
+  // ... 其他错误码
 };
 
 // ==================== 平台兼容性 ====================
@@ -56,12 +55,12 @@ enum class ErrorCode : uint16_t {
 #endif
 
 // ==================== 调试工具 ====================
-#define DISABLE_COPY(ClassName) \
-    ClassName(const ClassName&) = delete; \
-    ClassName& operator=(const ClassName&) = delete
+#define DISABLE_COPY(ClassName)                                                \
+  ClassName(const ClassName &) = delete;                                       \
+  ClassName &operator=(const ClassName &) = delete
 
-#define MAKE_NONMOVABLE(ClassName) \
-    ClassName(ClassName&&) = delete; \
-    ClassName& operator=(ClassName&&) = delete
+#define MAKE_NONMOVABLE(ClassName)                                             \
+  ClassName(ClassName &&) = delete;                                            \
+  ClassName &operator=(ClassName &&) = delete
 
 } // namespace whisker

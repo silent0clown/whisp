@@ -1,11 +1,11 @@
 #include "inet_address.h"
 #include "sockets.h"
+#include "endian.h"
 #include "log.h"
 #include <string.h>
+#include <arpa/inet.h>
 #include <netinet/in.h> 
 #include <netdb.h>
-// #include "../base/AsyncLog.h"
-// #include "Endian.h"
 
 static const in_addr_t kInaddrAny = INADDR_ANY;
 static const in_addr_t kInaddrLoopback = INADDR_LOOPBACK;
