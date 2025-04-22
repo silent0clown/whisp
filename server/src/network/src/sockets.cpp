@@ -17,19 +17,23 @@
 
 using namespace network;
 
-Socket::~Socket() {
+Socket::~Socket()
+{
     sockets::close(sockfd_);
 }
 
-void Socket::bindAddress(const InetAddress& addr) {
+void Socket::bindAddress(const InetAddress& addr)
+{
     sockets::bindOrDie(sockfd_, addr.getSockAddrInet());
 }
 
-void Socket::listen() {
+void Socket::listen()
+{
     sockets::listenOrDie(sockfd_);
 }
 
-int Socket::accept(InetAddress* peeraddr) {
+int Socket::accept(InetAddress* peeraddr)
+{
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof addr);
     int connfd = sockets::accept(sockfd_, &addr);
@@ -39,11 +43,13 @@ int Socket::accept(InetAddress* peeraddr) {
     return connfd;
 }
 
-void Socket::shutdownWrite() {
+void Socket::shutdownWrite()
+{
     sockets::shutdownWrite(sockfd_);
 }
 
-void Socket::setTcpNoDelay(bool on) {
+void Socket::setTcpNoDelay(bool on)
+{
     int optval = on ? 1 : 0;
 #ifdef WIN32
     ::setsockopt(sockfd_, IPPROTO_TCP, TCP_NODELAY, (char*) &optval, sizeof(optval));
@@ -53,15 +59,18 @@ void Socket::setTcpNoDelay(bool on) {
     // FIXME CHECK
 }
 
-void Socket::setReuseAddr(bool on) {
+void Socket::setReuseAddr(bool on)
+{
     sockets::setReuseAddr(sockfd_, on);
 }
 
-void Socket::setReusePort(bool on) {
+void Socket::setReusePort(bool on)
+{
     sockets::setReusePort(sockfd_, on);
 }
 
-void Socket::setKeepAlive(bool on) {
+void Socket::setKeepAlive(bool on)
+{
 #ifdef WIN32
     // TODO: 补全Windows的写法
 #else
@@ -79,24 +88,29 @@ void Socket::setKeepAlive(bool on) {
 //
 // }
 
-const struct sockaddr* sockets::sockaddr_cast(const struct sockaddr_in* addr) {
+const struct sockaddr* sockets::sockaddr_cast(const struct sockaddr_in* addr)
+{
     // return static_cast<const struct sockaddr*>((const void*) (addr));
     return reinterpret_cast<const struct sockaddr*>(addr);
 }
 
-struct sockaddr* sockets::sockaddr_cast(struct sockaddr_in* addr) {
+struct sockaddr* sockets::sockaddr_cast(struct sockaddr_in* addr)
+{
     return reinterpret_cast<struct sockaddr*>(addr);
 }
 
-const struct sockaddr_in* sockets::sockaddr_in_cast(const struct sockaddr* addr) {
+const struct sockaddr_in* sockets::sockaddr_in_cast(const struct sockaddr* addr)
+{
     return reinterpret_cast<const struct sockaddr_in*>(addr);
 }
 
-struct sockaddr_in* sockets::sockaddr_in_cast(struct sockaddr* addr) {
+struct sockaddr_in* sockets::sockaddr_in_cast(struct sockaddr* addr)
+{
     return reinterpret_cast<struct sockaddr_in*>(addr);
 }
 
-SOCKET sockets::createOrDie() {
+SOCKET sockets::createOrDie()
+{
 #ifdef WIN32
     SOCKET sockfd = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sockfd == INVALID_SOCKET) {
@@ -112,7 +126,8 @@ SOCKET sockets::createOrDie() {
     return sockfd;
 }
 
-SOCKET sockets::createNonblockingOrDie() {
+SOCKET sockets::createNonblockingOrDie()
+{
 #ifdef WIN32
     SOCKET sockfd = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sockfd == INVALID_SOCKET) {
@@ -129,7 +144,8 @@ SOCKET sockets::createNonblockingOrDie() {
     return sockfd;
 }
 
-void sockets::setNonBlockAndCloseOnExec(SOCKET sockfd) {
+void sockets::setNonBlockAndCloseOnExec(SOCKET sockfd)
+{
 #ifdef WIN32
     // 将socket设置成非阻塞的
     unsigned long on = 1;
@@ -151,21 +167,24 @@ void sockets::setNonBlockAndCloseOnExec(SOCKET sockfd) {
 #endif
 }
 
-void sockets::bindOrDie(SOCKET sockfd, const struct sockaddr_in& addr) {
+void sockets::bindOrDie(SOCKET sockfd, const struct sockaddr_in& addr)
+{
     int ret = ::bind(sockfd, sockaddr_cast(&addr), static_cast<socklen_t>(sizeof addr));
     if (ret == SOCKET_ERROR) {
         LOG_FATAL("sockets::bindOrDie");
     }
 }
 
-void sockets::listenOrDie(SOCKET sockfd) {
+void sockets::listenOrDie(SOCKET sockfd)
+{
     int ret = ::listen(sockfd, SOMAXCONN);
     if (ret == SOCKET_ERROR) {
         LOG_FATAL("sockets::listenOrDie");
     }
 }
 
-SOCKET sockets::accept(SOCKET sockfd, struct sockaddr_in* addr) {
+SOCKET sockets::accept(SOCKET sockfd, struct sockaddr_in* addr)
+{
     socklen_t addrlen = static_cast<socklen_t>(sizeof *addr);
 #ifdef WIN32
     SOCKET connfd = ::accept(sockfd, sockaddr_cast(addr), &addrlen);
@@ -213,7 +232,8 @@ SOCKET sockets::accept(SOCKET sockfd, struct sockaddr_in* addr) {
     return connfd;
 }
 
-void sockets::setReuseAddr(SOCKET sockfd, bool on) {
+void sockets::setReuseAddr(SOCKET sockfd, bool on)
+{
     int optval = on ? 1 : 0;
 #ifdef WIN32
     ::setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (char*) &optval, sizeof(optval));
@@ -223,7 +243,8 @@ void sockets::setReuseAddr(SOCKET sockfd, bool on) {
     // FIXME CHECK
 }
 
-void sockets::setReusePort(SOCKET sockfd, bool on) {
+void sockets::setReusePort(SOCKET sockfd, bool on)
+{
     // Windows 系统没有 SO_REUSEPORT 选项
 #ifndef WIN32
     int optval = on ? 1 : 0;
@@ -234,46 +255,53 @@ void sockets::setReusePort(SOCKET sockfd, bool on) {
 #endif
 }
 
-SOCKET sockets::connect(SOCKET sockfd, const struct sockaddr_in& addr) {
+SOCKET sockets::connect(SOCKET sockfd, const struct sockaddr_in& addr)
+{
     return ::connect(sockfd, sockaddr_cast(&addr), static_cast<socklen_t>(sizeof addr));
 }
 
-int32_t sockets::read(SOCKET sockfd, void* buf, uint32_t count) {
+int32_t sockets::read(SOCKET sockfd, void* buf, uint32_t count)
+{
 #ifdef WIN32
     return ::recv(sockfd, (char*) buf, count, 0);
 #else
-    return ::read(
+    return static_cast<int32_t>(::read(
         sockfd, buf,
-        count); // :: 用来明确表示调用的是全局作用域中的 recv 或 read 函数，避免与本类成员或其他命名空间中的函数冲突
+        count)); // :: 用来明确表示调用的是全局作用域中的 recv 或 read 函数，避免与本类成员或其他命名空间中的函数冲突
 #endif
 }
 
 #ifdef WIN32
-ssize_t sockets::readv(SOCKET sockfd, const struct iovec* iov, int iovcnt) {
+ssize_t sockets::readv(SOCKET sockfd, const struct iovec* iov, int iovcnt)
+{
     return readv(sockfd, iov, iovcnt);
 }
 #endif
 
-int32_t sockets::write(SOCKET sockfd, const void* buf, uint32_t count) {
+int32_t sockets::write(SOCKET sockfd, const void* buf, uint32_t count)
+{
 #ifdef WIN32
     return ::send(sockfd, (const char*) buf, count, 0);
 #else
-    return ::write(sockfd, buf, count);
+    ssize_t result = ::write(sockfd, buf, count);
+    return (result >= 0 && result <= INT32_MAX) ? static_cast<int32_t>(result) : -1;
 #endif
 }
 
-void sockets::close(SOCKET sockfd) {
+void sockets::close(SOCKET sockfd)
+{
 #ifdef WIN32
     if (::closesocket(sockfd) < 0)
 #else
-    if (close(sockfd) < 0)
+    if (::close(sockfd) < 0)
 #endif
     {
         LOG_SYSERROR("sockets::close, fd=%d, errno=%d, errorinfo=%s", sockfd, errno, strerror(errno));
     }
 }
 
-void sockets::shutdownWrite(SOCKET sockfd) {
+void sockets::shutdownWrite(SOCKET sockfd)
+{
 #ifdef WIN32
     if (::shutdown(sockfd, SD_SEND) < 0)
 #else
@@ -284,7 +312,8 @@ void sockets::shutdownWrite(SOCKET sockfd) {
     }
 }
 
-void sockets::toIpPort(char* buf, size_t size, const struct sockaddr_in& addr) {
+void sockets::toIpPort(char* buf, size_t size, const struct sockaddr_in& addr)
+{
     // if (size >= sizeof(struct sockaddr_in))
     //     return;
 
@@ -297,13 +326,15 @@ void sockets::toIpPort(char* buf, size_t size, const struct sockaddr_in& addr) {
     snprintf(buf + end, size - end, ":%u", port);
 }
 
-void sockets::toIp(char* buf, size_t size, const struct sockaddr_in& addr) {
+void sockets::toIp(char* buf, size_t size, const struct sockaddr_in& addr)
+{
     if (size >= sizeof(struct sockaddr_in)) return;
 
     ::inet_ntop(AF_INET, &addr.sin_addr, buf, static_cast<socklen_t>(size));
 }
 
-void sockets::fromIpPort(const char* ip, uint16_t port, struct sockaddr_in* addr) {
+void sockets::fromIpPort(const char* ip, uint16_t port, struct sockaddr_in* addr)
+{
     addr->sin_family = AF_INET;
     // TODO: 校验下写的对不对
 #ifdef WIN32
@@ -316,7 +347,8 @@ void sockets::fromIpPort(const char* ip, uint16_t port, struct sockaddr_in* addr
     }
 }
 
-int sockets::getSocketError(SOCKET sockfd) {
+int sockets::getSocketError(SOCKET sockfd)
+{
     int optval;
 #ifdef WIN32
     int optvallen = sizeof(optval);
@@ -329,8 +361,9 @@ int sockets::getSocketError(SOCKET sockfd) {
     return optval;
 }
 
-struct sockaddr_in sockets::getLocalAddr(SOCKET sockfd) {
-    struct sockaddr_in localaddr = {0};
+struct sockaddr_in sockets::getLocalAddr(SOCKET sockfd)
+{
+    struct sockaddr_in localaddr = {};
     memset(&localaddr, 0, sizeof localaddr);
     socklen_t addrlen = static_cast<socklen_t>(sizeof localaddr);
     ::getsockname(sockfd, sockaddr_cast(&localaddr), &addrlen);
@@ -342,8 +375,9 @@ struct sockaddr_in sockets::getLocalAddr(SOCKET sockfd) {
     return localaddr;
 }
 
-struct sockaddr_in sockets::getPeerAddr(SOCKET sockfd) {
-    struct sockaddr_in peeraddr = {0};
+struct sockaddr_in sockets::getPeerAddr(SOCKET sockfd)
+{
+    struct sockaddr_in peeraddr = {};
     memset(&peeraddr, 0, sizeof peeraddr);
     socklen_t addrlen = static_cast<socklen_t>(sizeof peeraddr);
     ::getpeername(sockfd, sockaddr_cast(&peeraddr), &addrlen);
@@ -354,7 +388,8 @@ struct sockaddr_in sockets::getPeerAddr(SOCKET sockfd) {
     return peeraddr;
 }
 
-bool sockets::isSelfConnect(SOCKET sockfd) {
+bool sockets::isSelfConnect(SOCKET sockfd)
+{
     struct sockaddr_in localaddr = getLocalAddr(sockfd);
     struct sockaddr_in peeraddr  = getPeerAddr(sockfd);
     return localaddr.sin_port == peeraddr.sin_port && localaddr.sin_addr.s_addr == peeraddr.sin_addr.s_addr;

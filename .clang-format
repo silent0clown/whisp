@@ -15,3 +15,14 @@ AlwaysBreakTemplateDeclarations: Yes
 Cpp11BracedListStyle: true
 AlignConsecutiveAssignments: true
 AlignConsecutiveDeclarations: true
+
+
+# 函数的大括号单独一行
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: true     # 函数后大括号换行
+  AfterControlStatement: false  # if/for/while 后大括号不换行
+  AfterClass: false       # 类定义后大括号不换行
+  AfterStruct: false      # 结构体后大括号不换行
+  AfterUnion: false       # 联合体后大括号不换行
+  AfterNamespace: false   # 命名空间后大括号不换行

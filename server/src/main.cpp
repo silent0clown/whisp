@@ -16,7 +16,8 @@
 #endif
 
 #ifndef WIN32
-void prog_exit(int signo) {
+void prog_exit(int signo)
+{
     std::cout << "program recv signal [" << signo << "] to exit." << std::endl;
 
     // Singleton<MonitorServer>::Instance().uninit();
@@ -29,7 +30,8 @@ void prog_exit(int signo) {
 #endif
 
 // 参数解析
-void parse_arguments(int argc, char* argv[]) {
+void parse_arguments(int argc, char* argv[])
+{
     int  ch;
     bool bdaemon = false;
     while ((ch = getopt(argc, argv, "d")) != -1) {
@@ -46,7 +48,8 @@ void parse_arguments(int argc, char* argv[]) {
     }
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
     std::cout << "[main] enter whisker main func." << std::endl;
 #ifndef WIND32
     signal(SIGCHLD, SIG_DFL);   // 子进程退出时，默认处理（避免产生僵尸进程）

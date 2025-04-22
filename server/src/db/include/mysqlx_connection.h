@@ -1,18 +1,18 @@
 #pragma once
-#include "iconnection.h"
-#include <openssl/ssl.h>
 #include <mysqlx/xdevapi.h>
+#include <openssl/ssl.h>
+#include "iconnection.h"
 // #include "../../../third_party/linux/x86_64/mysqlconn/include/mysqlx/xdevapi.h"
 // #include "mysqlx/xdevapi.h"
 
 class MySQLXConnection : public IConnection {
-public:
+   public:
     explicit MySQLXConnection(mysqlx::Session&& session);
     ~MySQLXConnection() override;
-    
+
     bool execute(const std::string& sql) override;
     bool isAlive() override;
 
-private:
+   private:
     mysqlx::Session session_;
 };

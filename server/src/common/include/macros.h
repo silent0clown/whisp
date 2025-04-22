@@ -27,42 +27,46 @@
 #endif
 
 #if defined(_WIN32) || defined(_WIN64)
-    #define WHISP_PLATFORM_WINDOWS
+#define WHISP_PLATFORM_WINDOWS
 #elif defined(__APPLE__) && defined(__MACH__)
-    #define WHISP_PLATFORM_MACOS
+#define WHISP_PLATFORM_MACOS
 #elif defined(__linux__)
-    #define WHISP_PLATFORM_LINUX
+#define WHISP_PLATFORM_LINUX
 #else
-    #define WHISP_PLATFORM_UNKNOWN
+#define WHISP_PLATFORM_UNKNOWN
 #endif
 
 // ==================== 代码生成控制 ====================
 // 禁用拷贝/移动语义
-#define DISABLE_COPY(Class) \
-    Class(const Class&) = delete; \
+#define DISABLE_COPY(Class)                  \
+    Class(const Class&)            = delete; \
     Class& operator=(const Class&) = delete
 
-#define DISABLE_MOVE(Class) \
-    Class(Class&&) = delete; \
+#define DISABLE_MOVE(Class)             \
+    Class(Class&&)            = delete; \
     Class& operator=(Class&&) = delete
 
 // ==================== 调试辅助 ====================
 #ifdef NDEBUG
-#define WHISKER_DEBUG_BREAK() do {} while (0)
-#define WHISKER_ASSERT(expr) do {} while (0)
-#else
 #define WHISKER_DEBUG_BREAK() \
-    do { \
+    do {                      \
+    } while (0)
+#define WHISKER_ASSERT(expr) \
+    do {                     \
+    } while (0)
+#else
+#define WHISKER_DEBUG_BREAK()          \
+    do {                               \
         volatile bool* trap = nullptr; \
-        *trap = true; \
+        *trap               = true;    \
     } while (0)
 
-#define WHISKER_ASSERT(expr) \
-    do { \
-        if (!(expr)) { \
+#define WHISKER_ASSERT(expr)                                \
+    do {                                                    \
+        if (!(expr)) {                                      \
             ::whisker::log::Error("Assert failed: " #expr); \
-            WHISKER_DEBUG_BREAK(); \
-        } \
+            WHISKER_DEBUG_BREAK();                          \
+        }                                                   \
     } while (0)
 #endif
 
@@ -94,12 +98,10 @@
 // 禁用构造函数
 #define NO_DEFAULT_CTOR(Class) Class() = delete
 
-
 // ==================== 编译模式 ====================
-#define WHISP_BUILD_MODE_DEBUG          (0)
-#define WHISP_BUILD_MODE_RELEASE        (1)
-#define WHISP_BUILD_MODE_TEST           (2)
-
+#define WHISP_BUILD_MODE_DEBUG (0)
+#define WHISP_BUILD_MODE_RELEASE (1)
+#define WHISP_BUILD_MODE_TEST (2)
 
 typedef int SOCKET;
 #define INVALID_SOCKET -1

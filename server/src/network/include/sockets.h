@@ -19,7 +19,8 @@ class Socket {
     explicit Socket(int sockfd) : sockfd_(sockfd) {}
     ~Socket();
 
-    SOCKET fd() const {
+    SOCKET fd() const
+    {
         return sockfd_;
     }
 
@@ -55,7 +56,7 @@ int32_t read(SOCKET sockfd, void* buf, uint32_t count);
 #ifdef WIN32
 ssize_t readv(SOCKET sockfd, const struct iovec* iov, int iovcnt);
 #endif
-int32_t write(SOCKET sockfd, const void* buf, int32_t count);
+int32_t write(SOCKET sockfd, const void* buf, uint32_t count);
 void    close(SOCKET sockfd);
 void    shutdownWrite(SOCKET sockfd);
 

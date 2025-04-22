@@ -1,9 +1,9 @@
 #include "config_parse.h"
-#include "macros.h"
-#include <iostream>
 #include <yaml-cpp/yaml.h>
+#include <iostream>
+#include "macros.h"
 
-bool ConfigParser::loadConfig(const std::string &file_name, struct WhispConfig &whisp_config)
+bool ConfigParser::loadConfig(const std::string& file_name, struct WhispConfig& whisp_config)
 {
     try {
         YAML::Node config = YAML::LoadFile(file_name);
@@ -49,7 +49,8 @@ bool ConfigParser::loadConfig(const std::string &file_name, struct WhispConfig &
             if (config["mysql"]["server_ip"].IsDefined())
                 whisp_config.mysql_config.mysql_server_addr = config["mysql"]["server_ip"].as<std::string>();
             if (config["mysql"]["server_port"].IsDefined())
-                whisp_config.mysql_config.mysql_server_port = std::stoi(config["mysql"]["server_port"].as<std::string>());
+                whisp_config.mysql_config.mysql_server_port =
+                    std::stoi(config["mysql"]["server_port"].as<std::string>());
             if (config["mysql"]["user"].IsDefined())
                 whisp_config.mysql_config.user = config["mysql"]["user"].as<std::string>();
             if (config["mysql"]["password"].IsDefined())
@@ -59,15 +60,13 @@ bool ConfigParser::loadConfig(const std::string &file_name, struct WhispConfig &
         }
 
         return true;
-
     } catch (const YAML::Exception& e) {
         std::cerr << "Error loading config file: " << e.what() << std::endl;
         return false;
     }
 }
 
-
-bool ConfigParser::loadConfig(struct WhispConfig &whisp_config)
+bool ConfigParser::loadConfig(struct WhispConfig& whisp_config)
 {
     return loadConfig(_getDefaultConfig(), whisp_config);
 }
@@ -77,13 +76,14 @@ std::string ConfigParser::_getDefaultConfig()
     if (WHISP_BUILD_MODE == WHISP_BUILD_MODE_TEST) {
         return std::string(PROJ_PATH) + "/config/test_config.yml";
     } else if (WHISP_BUILD_MODE == WHISP_BUILD_MODE_RELEASE) {
-        return  std::string(PROJ_PATH) + "/config/prod_config.yml";
-    } 
-    
-    return std::string(PROJ_PATH) + "/config/dev_config.yml";   
+        return std::string(PROJ_PATH) + "/config/prod_config.yml";
+    }
+
+    return std::string(PROJ_PATH) + "/config/dev_config.yml";
 }
 
-void ConfigParser::printConfig(const struct WhispConfig& whisp_config) {
+void ConfigParser::printConfig(const struct WhispConfig& whisp_config)
+{
     // 打印 Client 配置
     std::cout << "Client Config:" << std::endl;
     std::cout << "  Listen IP: " << whisp_config.client_config.client_listen_ip << std::endl;

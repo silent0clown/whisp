@@ -1,25 +1,24 @@
 #include "inet_address.h"
-#include "sockets.h"
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <string.h>
 #include "endian.h"
 #include "log.h"
-#include <string.h>
-#include <arpa/inet.h>
-#include <netinet/in.h> 
-#include <netdb.h>
+#include "sockets.h"
 
-static const in_addr_t kInaddrAny = INADDR_ANY;
+static const in_addr_t kInaddrAny      = INADDR_ANY;
 static const in_addr_t kInaddrLoopback = INADDR_LOOPBACK;
 
 using namespace network;
 
-
-InetAddress::InetAddress(uint16_t port, bool loopbackOnly/* = false*/)
+InetAddress::InetAddress(uint16_t port, bool loopbackOnly /* = false*/)
 {
     memset(&addr_, 0, sizeof addr_);
-    addr_.sin_family = AF_INET;
-    in_addr_t ip = loopbackOnly ? kInaddrLoopback : kInaddrAny;
+    addr_.sin_family      = AF_INET;
+    in_addr_t ip          = loopbackOnly ? kInaddrLoopback : kInaddrAny;
     addr_.sin_addr.s_addr = sockets::hostToNetwork32(ip);
-    addr_.sin_port = sockets::hostToNetwork16(port);
+    addr_.sin_port        = sockets::hostToNetwork16(port);
 }
 
 InetAddress::InetAddress(const std::string& ip, uint16_t port)
@@ -51,26 +50,24 @@ static thread_local char t_resolveBuffer[64 * 1024];
 
 bool InetAddress::resolve(const std::string& hostname, InetAddress* out)
 {
-    //assert(out != NULL);
-    struct hostent hent;
-    struct hostent* he = NULL;
-    int herrno = 0;
+    // assert(out != NULL);
+    struct hostent  hent;
+    struct hostent* he     = NULL;
+    int             herrno = 0;
     memset(&hent, 0, sizeof(hent));
 
 #ifndef WIN32
     int ret = gethostbyname_r(hostname.c_str(), &hent, t_resolveBuffer, sizeof t_resolveBuffer, &he, &herrno);
-    if (ret == 0 && he != NULL)
-    {
+    if (ret == 0 && he != NULL) {
         out->addr_.sin_addr = *reinterpret_cast<struct in_addr*>(he->h_addr);
         return true;
     }
 
-    if (ret)
-    {
+    if (ret) {
         LOG_SYSERROR("InetAddress::resolve");
     }
 
 #endif
-    //TODO: Windows上重新实现一下
+    // TODO: Windows上重新实现一下
     return false;
 }

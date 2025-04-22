@@ -9,6 +9,7 @@ Checks: >
   -clang-analyzer-cplusplus.InnerPointer,  # 可选关闭
   -modernize-use-trailing-return-type,     # 不强制尾返回
   -cppcoreguidelines-avoid-magic-numbers   # 允许魔法数（可自行决定）
+  -*,google-runtime-references,cppcoreguidelines-naming-namespace,readability-naming
 
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
@@ -19,3 +20,7 @@ CheckOptions:
   - { key: readability-identifier-naming.ClassCase, value: CamelCase }
   - { key: modernize-use-nullptr.NullMacros, value: 'NULL' }
   - { key: modernize-parameter-name.MinLength, value: 2 }  # 参数名最短为2个字符
+  # 检查类、函数、变量命名的可读性和规范性
+  - { key: readability-naming.FunctionNameCase, value: CamelCase }
+  - { key: readability-naming.ClassNameCase, value: PascalCase }
+  - { key: readability-naming.VariableNameCase, value: snake_case }
