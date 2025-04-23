@@ -15,30 +15,30 @@
     } while (0)
 
 struct ClientConfig {
+    short       client_listen_port;
     std::string client_listen_ip;
-    int         client_listen_port;
 };
 
 struct MonitorConfig {
+    short       monitor_listen_port;
     std::string monitor_listen_ip;
-    int         monitor_listen_port;
     std::string monitor_token;
 };
 
 struct HttpConfig {
+    short       http_listen_port;
     std::string http_listen_ip;
-    int         http_listen_port;
 };
 
 struct LogConfig {
+    bool        log_binary_package;
     std::string log_file_dir;
     std::string log_file_name;
-    bool        log_binary_package;
 };
 
 struct MysqlConfig {
+    short       mysql_server_port;
     std::string mysql_server_addr;
-    int         mysql_server_port;
     std::string user;
     std::string password;
     std::string database;

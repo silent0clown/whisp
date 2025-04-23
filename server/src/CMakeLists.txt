@@ -5,7 +5,7 @@
 add_subdirectory(common)
 add_subdirectory(db)
 add_subdirectory(network)
-# add_subdirectory(core)
+add_subdirectory(core)
 # add_subdirectory(infra)
 add_subdirectory(util)
 
@@ -18,7 +18,7 @@ target_link_libraries(whisp_server_proc PRIVATE
         common
         db
         network
-        # core
+        core
         # infra
         util
         )

@@ -13,7 +13,7 @@ bool ConfigParser::loadConfig(const std::string& file_name, struct WhispConfig& 
             if (config["client"]["listen_ip"].IsDefined())
                 whisp_config.client_config.client_listen_ip = config["client"]["listen_ip"].as<std::string>();
             if (config["client"]["listen_port"].IsDefined())
-                whisp_config.client_config.client_listen_port = config["client"]["listen_port"].as<int>();
+                whisp_config.client_config.client_listen_port = config["client"]["listen_port"].as<short>();
         }
 
         // 解析 Monitor 配置
@@ -21,7 +21,7 @@ bool ConfigParser::loadConfig(const std::string& file_name, struct WhispConfig& 
             if (config["monitor"]["listen_ip"].IsDefined())
                 whisp_config.monitor_config.monitor_listen_ip = config["monitor"]["listen_ip"].as<std::string>();
             if (config["monitor"]["listen_port"].IsDefined())
-                whisp_config.monitor_config.monitor_listen_port = config["monitor"]["listen_port"].as<int>();
+                whisp_config.monitor_config.monitor_listen_port = config["monitor"]["listen_port"].as<short>();
             if (config["monitor"]["token"].IsDefined())
                 whisp_config.monitor_config.monitor_token = config["monitor"]["token"].as<std::string>();
         }
@@ -31,7 +31,7 @@ bool ConfigParser::loadConfig(const std::string& file_name, struct WhispConfig& 
             if (config["http"]["listen_ip"].IsDefined())
                 whisp_config.http_config.http_listen_ip = config["http"]["listen_ip"].as<std::string>();
             if (config["http"]["listen_port"].IsDefined())
-                whisp_config.http_config.http_listen_port = config["http"]["listen_port"].as<int>();
+                whisp_config.http_config.http_listen_port = config["http"]["listen_port"].as<short>();
         }
 
         // 解析 Log 配置
@@ -50,7 +50,7 @@ bool ConfigParser::loadConfig(const std::string& file_name, struct WhispConfig& 
                 whisp_config.mysql_config.mysql_server_addr = config["mysql"]["server_ip"].as<std::string>();
             if (config["mysql"]["server_port"].IsDefined())
                 whisp_config.mysql_config.mysql_server_port =
-                    std::stoi(config["mysql"]["server_port"].as<std::string>());
+                    static_cast<short>(std::stoi(config["mysql"]["server_port"].as<std::string>()));
             if (config["mysql"]["user"].IsDefined())
                 whisp_config.mysql_config.user = config["mysql"]["user"].as<std::string>();
             if (config["mysql"]["password"].IsDefined())

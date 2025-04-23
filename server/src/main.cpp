@@ -125,7 +125,9 @@ int main(int argc, char* argv[])
     auto pool = std::make_shared<MySQLXPool>(std::move(factory), 5);
 
     // 监听端口
-
+    const char* listenip   = Wconfig.client_config.client_listen_ip.c_str();
+    short       listenport = Wconfig.client_config.client_listen_port;
+    LOG_INFO("[main] Listen Server: %s:%u", listenip, listenport);
     // 析构
     WhispLog::get_instance().log_uninit();
     std::cout << "[main] log uninit return true" << std::endl;

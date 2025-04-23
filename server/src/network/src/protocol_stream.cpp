@@ -21,7 +21,10 @@ unsigned short checksum(const unsigned short* buffer, int size)
     unsigned int cksum = 0;
     while (size > 1) {
         cksum += *buffer++;
-        size -= sizeof(unsigned short);
+        // size -= sizeof(unsigned short);
+        constexpr std::size_t short_size = sizeof(unsigned short);
+        // size -= short_size;
+        size -= static_cast<int>(short_size);
     }
     if (size) {
         cksum += *reinterpret_cast<const unsigned char*>(buffer);
@@ -59,6 +62,7 @@ void write7BitEncoded(uint64_t value, std::string& buf)
 // 将一个1~5个字节的字符数组值还原成4字节的整型值
 void read7BitEncoded(const char* buf, uint32_t len, uint32_t& value)
 {
+    (void) len;
     char c;
     value        = 0;
     int bitCount = 0;
@@ -76,6 +80,7 @@ void read7BitEncoded(const char* buf, uint32_t len, uint32_t& value)
 // 将一个1~10个字节的值还原成4字节的整型值
 void read7BitEncoded(const char* buf, uint32_t len, uint64_t& value)
 {
+    (void) len;
     char c;
     value        = 0;
     int bitCount = 0;
@@ -185,7 +190,8 @@ bool BinaryStreamReader::ReadInt32(int32_t& i)
     if (cur + VALUE_SIZE > ptr + len) return false;
 
     memcpy(&i, cur, VALUE_SIZE);
-    i = ntohl(i);
+    // i = ntohl(i);
+    i = static_cast<int32_t>(ntohl(static_cast<uint32_t>(i)));
 
     cur += VALUE_SIZE;
 
@@ -210,7 +216,8 @@ bool BinaryStreamReader::ReadShort(short& i)
     }
 
     memcpy(&i, cur, VALUE_SIZE);
-    i = ntohs(i);
+    // i = ntohs(i);
+    i = static_cast<int16_t>(ntohs(static_cast<uint16_t>(i)));
 
     cur += VALUE_SIZE;
 
@@ -320,13 +327,13 @@ size_t BinaryStreamWriter::GetSize() const
 bool BinaryStreamWriter::WriteInt32(int32_t i, bool isNULL)
 {
     int32_t i2 = 999999999;
-    if (isNULL == false) i2 = htonl(i);
+    if (isNULL == false) i2 = static_cast<int32_t>(htonl(static_cast<uint32_t>(i)));
     m_data->append(static_cast<char*>(static_cast<void*>(&i2)), sizeof(i2));
     return true;
 }
 bool BinaryStreamWriter::WriteInt64(int64_t value, bool isNULL)
 {
-    char int64str[128];
+    char int64str[128] = {0};
     if (isNULL == false) {
 #ifndef _WIN32
         sprintf(int64str, "%ld", value);
@@ -341,7 +348,7 @@ bool BinaryStreamWriter::WriteInt64(int64_t value, bool isNULL)
 bool BinaryStreamWriter::WriteShort(short i, bool isNULL)
 {
     short i2 = 0;
-    if (isNULL == false) i2 = htons(i);
+    if (isNULL == false) i2 = static_cast<int16_t>(htons(static_cast<uint16_t>(i)));
     m_data->append(reinterpret_cast<char*>(&i2), sizeof(i2));
     return true;
 }
@@ -354,7 +361,7 @@ bool BinaryStreamWriter::WriteChar(char c, bool isNULL)
 }
 bool BinaryStreamWriter::WriteDouble(double value, bool isNULL)
 {
-    char doublestr[128];
+    char doublestr[128] = {0};
     if (isNULL == false) {
         sprintf(doublestr, "%f", value);
         WriteCString(doublestr, strlen(doublestr));
@@ -364,8 +371,10 @@ bool BinaryStreamWriter::WriteDouble(double value, bool isNULL)
 }
 void BinaryStreamWriter::Flush()
 {
-    char*        ptr  = &(*m_data)[0];
-    unsigned int ulen = htonl(m_data->length());
+    char* ptr = &(*m_data)[0];
+    // unsigned int ulen = htonl(m_data->length());
+    // NOTE: assume m_data->length() will not exceed 4GB
+    uint32_t ulen = htonl(static_cast<uint32_t>(m_data->length()));
     memcpy(ptr, &ulen, sizeof(ulen));
 }
 void BinaryStreamWriter::Clear()
