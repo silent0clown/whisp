@@ -2,25 +2,70 @@ Checks: >
   clang-analyzer-*,
   bugprone-*,
   performance-*,
-  readability-*,
+  readability-identifier-naming,
   modernize-*,
   portability-*,
   cppcoreguidelines-*,
-  -clang-analyzer-cplusplus.InnerPointer,  # 可选关闭
-  -modernize-use-trailing-return-type,     # 不强制尾返回
-  -cppcoreguidelines-avoid-magic-numbers   # 允许魔法数（可自行决定）
-  -*,google-runtime-references,cppcoreguidelines-naming-namespace,readability-naming
+  google-runtime-references,
+  cppcoreguidelines-naming-namespace,
+  -clang-analyzer-cplusplus.InnerPointer,
+  -modernize-use-trailing-return-type,
+  -cppcoreguidelines-avoid-magic-numbers
 
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
 FormatStyle: file
+
 CheckOptions:
-  - { key: readability-identifier-naming.VariableCase, value: camelBack }
-  - { key: readability-identifier-naming.FunctionCase, value: camelBack }
+  # 类名 CamelCase
   - { key: readability-identifier-naming.ClassCase, value: CamelCase }
+
+  # 函数名 camelBack
+  - { key: readability-identifier-naming.FunctionCase, value: camelBack }
+
+  # 变量 camelBack（本地变量和参数）
+  - { key: readability-identifier-naming.VariableCase, value: camelBack }
+  - { key: readability-identifier-naming.ParameterCase, value: camelBack }
+
+  # 常量 UPPER_CASE
+  - { key: readability-identifier-naming.ConstantCase, value: UPPER_CASE }
+
+  # 公共成员 PascalCase
+  - { key: readability-identifier-naming.PublicMemberCase, value: CamelCase }
+
+  # 私有成员 camelBack + 后缀 _
+  - { key: readability-identifier-naming.PrivateMemberCase, value: camelBack }
+  - { key: readability-identifier-naming.PrivateMemberSuffix, value: _ }
+
+  # 可选项：是否允许 NULL，参数命名最小长度
   - { key: modernize-use-nullptr.NullMacros, value: 'NULL' }
-  - { key: modernize-parameter-name.MinLength, value: 2 }  # 参数名最短为2个字符
-  # 检查类、函数、变量命名的可读性和规范性
-  - { key: readability-naming.FunctionNameCase, value: CamelCase }
-  - { key: readability-naming.ClassNameCase, value: PascalCase }
-  - { key: readability-naming.VariableNameCase, value: snake_case }
+  - { key: modernize-parameter-name.MinLength, value: 2 }
+
+# Checks: >
+#   clang-analyzer-*,
+#   bugprone-*,
+#   performance-*,
+#   readability-*,
+#   modernize-*,
+#   portability-*,
+#   cppcoreguidelines-*,
+#   -clang-analyzer-cplusplus.InnerPointer,  # 可选关闭
+#   -modernize-use-trailing-return-type,     # 不强制尾返回
+#   -cppcoreguidelines-avoid-magic-numbers,   # 允许魔法数（可自行决定）
+#   -*,google-runtime-references,cppcoreguidelines-naming-namespace,
+#   -readability-identifier-naming,
+#   -readability-function-size
+
+# WarningsAsErrors: ''
+# HeaderFilterRegex: '.*'
+# FormatStyle: file
+# CheckOptions:
+#   - { key: readability-identifier-naming.VariableCase, value: camelBack }
+#   - { key: readability-identifier-naming.FunctionCase, value: camelBack }
+#   - { key: readability-identifier-naming.ClassCase, value: CamelCase }   
+#   - { key: modernize-use-nullptr.NullMacros, value: 'NULL' }
+#   - { key: modernize-parameter-name.MinLength, value: 2 }  # 参数名最短为2个字符
+#   # 检查类、函数、变量命名的可读性和规范性
+#   - { key: readability-naming.FunctionNameCase, value: CamelCase }
+#   - { key: readability-naming.ClassNameCase, value: PascalCase }
+#   - { key: readability-naming.VariableNameCase, value: snake_case }

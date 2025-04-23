@@ -4,9 +4,23 @@
 # )
 
 set(NETWORK_SRC
-    src/reactor.cpp
+    src/acceptor.cpp
+    src/byte_buffer.cpp
+    src/channel.cpp
+    src/connector.cpp
+    src/epoll_poller.cpp
+    src/event_loop.cpp
+    src/eventloop_thread.cpp
+    src/eventloop_threadpool.cpp
     src/inet_address.cpp
+    src/poller.cpp
+    src/protocol_stream.cpp
+    src/reactor.cpp
     src/sockets.cpp
+    src/tcp_connection.cpp
+    src/tcp_server.cpp
+    src/timer_queue.cpp
+    src/timer.cpp
 )
 
 add_library(network ${NETWORK_SRC})

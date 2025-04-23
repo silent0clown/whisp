@@ -2,3 +2,4 @@ server/output/*
 server/data/*
 server/cmake/.cache/*
 server/cmake/compile_commands.json
+server/build
