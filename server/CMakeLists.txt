@@ -31,7 +31,8 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     )
 endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++)   # 开启后，其生成的文件compile_commands.json，包含所有编译单元所执行的指令
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++)   
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # 开启后，其生成的文件compile_commands.json，包含所有编译单元所执行的指令
 # 设置PROJECT_ROOT_PATH
 set(PROJ_ROOT_PATH "${CMAKE_SOURCE_DIR}")
 message(STATUS "Project root path: ${PROJ_ROOT_PATH}")

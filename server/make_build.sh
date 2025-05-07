@@ -59,6 +59,8 @@ cd ..
 if [ -f "$BUILD_DIR/compile_commands.json" ]; then
     cp "$BUILD_DIR/compile_commands.json" cmake/
     echo "move build/compile_commands.json to dir cmake/"
+else
+    echo "unfind build/compile_commands.json"
 fi
 
 # 清空构建目录
