@@ -1,15 +1,22 @@
-// zlib_util.h
-#pragma once
-
-#include <optional>
+#ifndef __ZLIB_UTIL_H__
+#define __ZLIB_UTIL_H__
 #include <string>
 
-namespace whisker::util {
-
 class ZlibUtil {
-public:
-    static std::optional<std::string> Compress(const std::string_view input);
-    static std::optional<std::string> Decompress(const std::string_view input);
+   private:
+    ZlibUtil()                    = delete;
+    ~ZlibUtil()                   = delete;
+    ZlibUtil(const ZlibUtil& rhs) = delete;
+
+   public:
+    static bool compressBuf(const char* pSrcBuf, size_t nSrcBufLength, char* pDestBuf, size_t& nDestBufLength);
+    static bool compressBuf(const std::string& strSrcBuf, std::string& strDestBuf);
+    static bool uncompressBuf(const std::string& strSrcBuf, std::string& strDestBuf, size_t nDestBufLength);
+
+    // gzipѹ��
+    static bool inflate(const std::string& strSrc, std::string& dest);
+    // gzip��ѹ
+    static bool deflate(const std::string& strSrc, std::string& strDest);
 };
 
-} // namespace whisker::util
+#endif //!__ZLIB_UTIL_H__

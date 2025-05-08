@@ -31,8 +31,9 @@
         "**/node_modules/**": true,
         "**/*.min.js": true
     },
+    // 不删除文件，只是隐藏
     "files.exclude": {
-        "**/third_party/**": true,
+        // "**/third_party/**": true,
         "**/node_modules/**": true
     },
     "editor.bracketPairColorization.enabled": true,

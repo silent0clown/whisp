@@ -14,12 +14,12 @@ struct OnlineUserInfo {
     std::string username;
     std::string nickname;
     std::string password;
-    int32_t     clienttype; // �ͻ�������, 0δ֪, pc=1, android/ios=2
-    int32_t     status;     // ����״̬ 0���� 1���� 2æµ 3�뿪 4����
+    int32_t     clienttype; // 客户端类型, 0未知, pc=1, android/ios=2
+    int32_t     status;     // 在线状态 0离线 1在线 2忙碌 3离开 4隐身
 };
 
 /**
- * ����Ự��
+ * 聊天会话类
  */
 class ChatSession : public TcpSession {
    public:
@@ -29,7 +29,7 @@ class ChatSession : public TcpSession {
     ChatSession(const ChatSession& rhs)            = delete;
     ChatSession& operator=(const ChatSession& rhs) = delete;
 
-    // �����ݿɶ�, �ᱻ�������loop����
+    // 有数据可读, 会被多个工作loop调用
     void onRead(const std::shared_ptr<TcpConnection>& conn, ByteBuffer* pBuffer, Timestamp receivTime);
 
     int32_t getSessionId()
@@ -73,18 +73,18 @@ class ChatSession : public TcpSession {
     }
 
     /**
-     *@param type ȡֵ�� 1 �û����ߣ� 2 �û����ߣ� 3 �����ǳơ�ͷ��ǩ������Ϣ����
+     *@param type 取值： 1 用户上线； 2 用户下线； 3 个人昵称、头像、签名等信息更改
      */
     void sendUserStatusChangeMsg(int32_t userid, int type, int status = 0);
 
-    // ��SessionʧЧ�����ڱ������ߵ��û���session
+    // 让Session失效，用于被踢下线的用户的session
     void makeSessionInvalid();
     bool isSessionValid();
 
     void enableHearbeatCheck();
     void disableHeartbeatCheck();
 
-    // ��������������ָ��ʱ���ڣ�������30�룩δ�յ����ݰ����������Ͽ��ڿͻ��˵�����
+    // 检测心跳包，如果指定时间内（现在是30秒）未收到数据包，则主动断开于客户端的连接
     void checkHeartbeat(const std::shared_ptr<TcpConnection>& conn);
 
    private:
@@ -116,17 +116,17 @@ class ChatSession : public TcpSession {
 
     void deleteFriend(const std::shared_ptr<TcpConnection>& conn, int32_t friendid);
 
-    // �����û�������Ϣ��װӦ����ͻ��˵ĺ����б���Ϣ
+    // 根据用户分组信息组装应答给客户端的好友列表信息
     void makeUpFriendListInfo(std::string& friendinfo, const std::shared_ptr<TcpConnection>& conn);
 
-    // ��������Ϣ�ı���ʱ��ĳɷ�����ʱ�䣬�޸ĳɹ�����true,ʧ�ܷ���false��
+    // 将聊天消息的本地时间改成服务器时间，修改成功返回true,失败返回false。
     bool modifyChatMsgLocalTimeToServerTime(const std::string& chatInputJson, std::string& chatOutputJson);
 
    private:
     int32_t        m_id; // session id
     OnlineUserInfo m_userinfo;
-    int32_t        m_seq;                // ��ǰSession���ݰ����к�
-    bool           m_isLogin;            // ��ǰSession��Ӧ���û��Ƿ��Ѿ���¼
-    time_t         m_lastPackageTime;    // ��һ���շ�����ʱ��
-    TimerId        m_checkOnlineTimerId; // ����Ƿ����ߵĶ�ʱ��id
+    int32_t        m_seq;                // 当前Session数据包序列号
+    bool           m_isLogin;            // 当前Session对应的用户是否已经登录
+    time_t         m_lastPackageTime;    // 上一次收发包的时间
+    TimerId        m_checkOnlineTimerId; // 检测是否在线的定时器id
 };
