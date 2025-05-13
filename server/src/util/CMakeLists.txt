@@ -12,3 +12,13 @@ add_library(util ${UTIL_SRC})
 target_include_directories(util PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+
+add_library(zlib STATIC IMPORTED)
+# 设置 zlib 的包含目录
+# message(STATUS "zlib include dir: ${THIRD_PARTY_DIR}/zlib/include")
+set_target_properties(zlib PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/zlib/lib/libz.a)
+
+target_link_libraries(util PUBLIC
+    zlib
+)

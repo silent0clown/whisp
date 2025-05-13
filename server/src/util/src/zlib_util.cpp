@@ -15,7 +15,8 @@ bool ZlibUtil::compressBuf(const char* pSrcBuf, size_t nSrcBufLength, char* pDes
 
     nDestBufLength = compressBound(nSrcBufLength);
 
-    int ret = compress((Bytef*) pDestBuf, (uLongf*) &nDestBufLength, (const Bytef*) pSrcBuf, nSrcBufLength);
+    int ret = compress(reinterpret_cast<Bytef*>(pDestBuf), reinterpret_cast<uLongf*>(&nDestBufLength),
+                       reinterpret_cast<const Bytef*>(pSrcBuf), nSrcBufLength);
     if (ret != Z_OK) return false;
 
     return true;
@@ -35,7 +36,8 @@ bool ZlibUtil::compressBuf(const std::string& strSrcBuf, std::string& strDestBuf
     memset(pDestBuf, 0, nDestBufLength * sizeof(char));
 
     // ѹ��
-    int ret = compress((Bytef*) pDestBuf, (uLongf*) &nDestBufLength, (const Bytef*) strSrcBuf.c_str(), nSrcLength);
+    int ret = compress(reinterpret_cast<Bytef*>(pDestBuf), reinterpret_cast<uLongf*>(&nDestBufLength),
+                       reinterpret_cast<const Bytef*>(strSrcBuf.c_str()), nSrcLength);
     if (ret != Z_OK) {
         delete[] pDestBuf;
         return false;
@@ -51,10 +53,8 @@ bool ZlibUtil::uncompressBuf(const std::string& strSrcBuf, std::string& strDestB
 {
     char* pDestBuf = new char[nDestBufLength];
     memset(pDestBuf, 0, nDestBufLength * sizeof(char));
-    size_t nPrevDestBufLength = nDestBufLength;
-    // ��ѹ��
-    int ret =
-        uncompress((Bytef*) pDestBuf, (uLongf*) &nDestBufLength, (const Bytef*) strSrcBuf.c_str(), strSrcBuf.length());
+    int ret = uncompress(reinterpret_cast<Bytef*>(pDestBuf), reinterpret_cast<uLongf*>(&nDestBufLength),
+                         reinterpret_cast<const Bytef*>(strSrcBuf.c_str()), strSrcBuf.length());
     if (ret != Z_OK) {
         delete[] pDestBuf;
         return false;
@@ -75,7 +75,7 @@ bool ZlibUtil::deflate(const std::string& strSrc, std::string& strDest)
 {
     int err = Z_DATA_ERROR;
     // Create stream
-    z_stream zS = {0};
+    z_stream zS = {};
     // Set output data streams, do this here to avoid overwriting on recursive calls
     const int OUTPUT_BUF_SIZE           = 8192;
     Bytef     bytesOut[OUTPUT_BUF_SIZE] = {0};
@@ -87,8 +87,8 @@ bool ZlibUtil::deflate(const std::string& strSrc, std::string& strDest)
         return false;
     }
     // Use whatever input is provided
-    zS.next_in  = (Bytef*) (strSrc.c_str());
-    zS.avail_in = strSrc.length();
+    zS.next_in  = reinterpret_cast<Bytef*>(const_cast<char*>(strSrc.c_str()));
+    zS.avail_in = static_cast<uInt>(strSrc.length());
 
     do {
         try {
@@ -108,7 +108,7 @@ bool ZlibUtil::deflate(const std::string& strSrc, std::string& strDest)
             // Is zip finished reading all currently available input and writing all generated output
             if (err == Z_STREAM_END) {
                 // Finish up
-                int kerr = ::deflateEnd(&zS);
+                ::deflateEnd(&zS);
                 // �����ķ��ؽ��
                 // if (err != Z_OK)
                 //{
@@ -119,22 +119,22 @@ bool ZlibUtil::deflate(const std::string& strSrc, std::string& strDest)
 
                 // Got a good result, set the size to the amount unzipped in this call (including all recursive calls)
 
-                strDest.append((const char*) bytesOut, OUTPUT_BUF_SIZE - zS.avail_out);
+                strDest.append(reinterpret_cast<const char*>(bytesOut), OUTPUT_BUF_SIZE - zS.avail_out);
                 return true;
             } else if ((err == Z_OK) && (zS.avail_out == 0) && (zS.avail_in != 0)) {
                 // Output array was not big enough, call recursively until there is enough space
                 // TRACE_UNZIP("; output array not big enough (ain=%u)\n", zS->avail_in);
 
-                strDest.append((const char*) bytesOut, OUTPUT_BUF_SIZE - zS.avail_out);
+                strDest.append(reinterpret_cast<const char*>(bytesOut), OUTPUT_BUF_SIZE - zS.avail_out);
 
                 continue;
             } else if ((err == Z_OK) && (zS.avail_in == 0)) {
                 // TRACE_UNZIP("; all input processed\n");
                 //  All available input has been processed, everything ok.
                 //  Set the size to the amount unzipped in this call (including all recursive calls)
-                strDest.append((const char*) bytesOut, OUTPUT_BUF_SIZE - zS.avail_out);
+                strDest.append(reinterpret_cast<const char*>(bytesOut), OUTPUT_BUF_SIZE - zS.avail_out);
 
-                int kerr = ::deflateEnd(&zS);
+                ::deflateEnd(&zS);
                 // �����Ľ��
                 // if (err != Z_OK)
                 //{
@@ -164,7 +164,7 @@ bool ZlibUtil::inflate(const std::string& strSrc, std::string& strDest)
 {
     int err = Z_DATA_ERROR;
     // Create stream
-    z_stream zS = {0};
+    z_stream zS = {};
     // Set output data streams, do this here to avoid overwriting on recursive calls
     const int OUTPUT_BUF_SIZE           = 8192;
     Bytef     bytesOut[OUTPUT_BUF_SIZE] = {0};
@@ -177,8 +177,8 @@ bool ZlibUtil::inflate(const std::string& strSrc, std::string& strDest)
     }
 
     // Use whatever input is provided
-    zS.next_in  = (Bytef*) (strSrc.c_str());
-    zS.avail_in = strSrc.length();
+    zS.next_in  = reinterpret_cast<Bytef*>(const_cast<char*>(strSrc.c_str()));
+    zS.avail_in = static_cast<uInt>(strSrc.length());
 
     do {
         try {
@@ -198,7 +198,7 @@ bool ZlibUtil::inflate(const std::string& strSrc, std::string& strDest)
             // Is zip finished reading all currently available input and writing all generated output
             if (err == Z_STREAM_END) {
                 // Finish up
-                int kerr = ::inflateEnd(&zS);
+                ::inflateEnd(&zS);
                 // �����ķ��ؽ��
                 // if (err != Z_OK)
                 //{
@@ -209,22 +209,22 @@ bool ZlibUtil::inflate(const std::string& strSrc, std::string& strDest)
 
                 // Got a good result, set the size to the amount unzipped in this call (including all recursive calls)
 
-                strDest.append((const char*) bytesOut, OUTPUT_BUF_SIZE - zS.avail_out);
+                strDest.append(reinterpret_cast<const char*>(bytesOut), OUTPUT_BUF_SIZE - zS.avail_out);
                 return true;
             } else if ((err == Z_OK) && (zS.avail_out == 0) && (zS.avail_in != 0)) {
                 // Output array was not big enough, call recursively until there is enough space
                 // TRACE_UNZIP("; output array not big enough (ain=%u)\n", zS->avail_in);
 
-                strDest.append((const char*) bytesOut, OUTPUT_BUF_SIZE - zS.avail_out);
+                strDest.append(reinterpret_cast<const char*>(bytesOut), OUTPUT_BUF_SIZE - zS.avail_out);
 
                 continue;
             } else if ((err == Z_OK) && (zS.avail_in == 0)) {
                 // TRACE_UNZIP("; all input processed\n");
                 //  All available input has been processed, everything ok.
                 //  Set the size to the amount unzipped in this call (including all recursive calls)
-                strDest.append((const char*) bytesOut, OUTPUT_BUF_SIZE - zS.avail_out);
+                strDest.append(reinterpret_cast<const char*>(bytesOut), OUTPUT_BUF_SIZE - zS.avail_out);
 
-                int kerr = ::inflateEnd(&zS);
+                ::inflateEnd(&zS);
                 // �����Ľ��
                 // if (err != Z_OK)
                 //{

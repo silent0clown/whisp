@@ -10,13 +10,13 @@
 
 file(GLOB_RECURSE CORE_SRC CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp    
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/session*.cpp    
 )
 add_library(core ${CORE_SRC})
 
 target_include_directories(core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/session/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/message/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/session
     ${THIRD_PARTY_PATH}/jsoncpp/include    
 )
 

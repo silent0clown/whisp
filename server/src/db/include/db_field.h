@@ -1,6 +1,6 @@
 #pragma once
 
-#include <algorithm>
+// #include <algorithm>
 #include <cstdint>
 #include <string>
 
@@ -73,7 +73,7 @@ class Field {
     uint64_t getUInt64() const
     {
         uint64_t value = 0;
-        value          = atoll(m_strValue.c_str());
+        value          = static_cast<uint64_t>(atoll(m_strValue.c_str()));
         return value;
     }
 

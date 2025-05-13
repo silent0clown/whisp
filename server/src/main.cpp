@@ -6,6 +6,8 @@
 // #include "mysqlx_pool.h"
 #include <string.h>
 #include <iostream>
+#include "chat_server.h"
+#include "event_loop.h"
 #include "singleton.h"
 #include "user_manager.h"
 #include "w_mysql/mysql_manager.h"
@@ -30,6 +32,8 @@ void prog_exit(int signo)
     // CAsyncLog::uninit();
 }
 #endif
+
+network::EventLoop g_mainLoop;
 
 // 参数解析
 void parse_arguments(int argc, char* argv[])
@@ -139,6 +143,7 @@ int main(int argc, char* argv[])
     const char* listenip   = Wconfig.client_config.client_listen_ip.c_str();
     short       listenport = Wconfig.client_config.client_listen_port;
     LOG_INFO("[main] Listen Server: %s:%u", listenip, listenport);
+    Singleton<ChatServer>::Instance().init(listenip, listenport, &g_mainLoop);
     // 析构
     WhispLog::get_instance().log_uninit();
     std::cout << "[main] log uninit return true" << std::endl;

@@ -1,6 +1,6 @@
 #include "session/chat_session.h"
 #include "msg.h"
-#include "session/user_manager.h"
+#include "user_manager.h"
 /**
  * ChatSession.cpp
  * zhangyl, 2017.03.10
@@ -13,10 +13,14 @@
 #include "protocol_stream.h"
 #include "tcp_connection.h"
 // #include "../zlib1.2.11/ZlibUtil.h"
-#include "json/json.h"
+// #include "json/json.h"
+#include "json/reader.h"
+#include "json/writer.h"
 #include "zlib_util.h"
 // #include "BussinessLogic.h"
+#include "bussiness.h"
 #include "log.h"
+#include "msg_cache_manager.h"
 #include "session/chat_server.h"
 #include "singleton.h"
 // #include "Msg.h"
@@ -56,9 +60,10 @@ ChatSession::~ChatSession()
 
 void ChatSession::onRead(const std::shared_ptr<TcpConnection>& conn, ByteBuffer* pBuffer, Timestamp receivTime)
 {
+    (void) receivTime;
     while (true) {
         // 不够一个包头大小
-        if (pBuffer->readableBytes() < (size_t) sizeof(chat_msg_header)) {
+        if (pBuffer->readableBytes() < static_cast<size_t>(sizeof(chat_msg_header))) {
             // LOG_INFO << "buffer is not enough for a package header, pBuffer->readableBytes()=" <<
             // pBuffer->readableBytes() << ", sizeof(msg)=" << sizeof(msg);
             return;
@@ -80,7 +85,7 @@ void ChatSession::onRead(const std::shared_ptr<TcpConnection>& conn, ByteBuffer*
             }
 
             // 收到的数据不够一个完整的包
-            if (pBuffer->readableBytes() < (size_t) header.compresssize + sizeof(chat_msg_header)) return;
+            if (pBuffer->readableBytes() < static_cast<size_t>(header.compresssize) + sizeof(chat_msg_header)) return;
 
             pBuffer->retrieve(sizeof(chat_msg_header));
             std::string inbuf;
@@ -114,7 +119,7 @@ void ChatSession::onRead(const std::shared_ptr<TcpConnection>& conn, ByteBuffer*
             }
 
             // 收到的数据不够一个完整的包
-            if (pBuffer->readableBytes() < (size_t) header.originsize + sizeof(chat_msg_header)) return;
+            if (pBuffer->readableBytes() < static_cast<size_t>(header.originsize) + sizeof(chat_msg_header)) return;
 
             pBuffer->retrieve(sizeof(chat_msg_header));
             std::string inbuf;
@@ -696,7 +701,7 @@ void ChatSession::onOperateFriendResponse(const std::string& data, const std::sh
         char szSelfData[256] = {0};
         snprintf(szSelfData, 256, "{\"userid\": %d, \"type\": 3, \"username\": \"%s\", \"accept\": %d}",
                  targetUser.userid, targetUser.username.c_str(), accept);
-        send(msg_type_operatefriend, m_seq, szSelfData, strlen(szSelfData));
+        send(msg_type_operatefriend, m_seq, szSelfData, static_cast<int32_t>(strlen(szSelfData)));
         LOG_INFO("Response to client: userid: %d, cmd=msg_type_addfriend, data: %s", m_userinfo.userid, szSelfData);
     }
 
@@ -742,7 +747,7 @@ void ChatSession::onAddGroupResponse(int32_t groupId, const std::shared_ptr<TcpC
     char szSelfData[256] = {0};
     snprintf(szSelfData, 256, "{\"userid\": %d, \"type\": 3, \"username\": \"%s\", \"accept\": 3}", groupUser.userid,
              groupUser.username.c_str());
-    send(msg_type_operatefriend, m_seq, szSelfData, strlen(szSelfData));
+    send(msg_type_operatefriend, m_seq, szSelfData, static_cast<int32_t>(strlen(szSelfData)));
     LOG_INFO("Response to client: cmd=msg_type_addfriend, data: %s, userid: %d", szSelfData, m_userinfo.userid);
 
     if (!Singleton<UserManager>::Instance().updateUserRelationshipInMemory(m_userinfo.userid, groupId,
@@ -956,7 +961,7 @@ void ChatSession::onCreateGroupResponse(const std::string& data, const std::shar
         char szSelfData[256] = {0};
         snprintf(szSelfData, 256, "{\"userid\": %d, \"type\": 3, \"username\": \"%s\", \"accept\": 1}", groupid,
                  groupname.c_str());
-        send(msg_type_operatefriend, m_seq, szSelfData, strlen(szSelfData));
+        send(msg_type_operatefriend, m_seq, szSelfData, static_cast<int32_t>(strlen(szSelfData)));
         LOG_INFO("Response to client, userid: %d, cmd=msg_type_addfriend, data: %s", m_userinfo.userid, szSelfData);
     }
 }
@@ -1109,7 +1114,6 @@ void ChatSession::onChatResponse(int32_t targetid, const std::string& data, cons
         std::list<User> friends;
         userMgr.getFriendInfoByUserId(targetid, friends);
         std::string strUserInfo;
-        bool        useronline = false;
         for (const auto& iter : friends) {
             // 排除群成员中的自己
             if (iter.userid == m_userinfo.userid) continue;
@@ -1163,6 +1167,7 @@ void ChatSession::onMultiChatResponse(const std::string& targets, const std::str
 void ChatSession::onScreenshotResponse(int32_t targetid, const std::string& bmpHeader, const std::string& bmpData,
                                        const std::shared_ptr<TcpConnection>& conn)
 {
+    (void) conn;
     std::string        outbuf;
     BinaryStreamWriter writeStream(&outbuf);
     writeStream.WriteInt32(msg_type_remotedesktop);
@@ -1506,7 +1511,7 @@ void ChatSession::deleteFriend(const std::shared_ptr<TcpConnection>& conn, int32
     // 发给主动删除的一方
     //{"userid": 9, "type": 1, }
     snprintf(szData, 256, "{\"userid\":%d, \"type\":5, \"username\": \"%s\"}", friendid, cachedUser.username.c_str());
-    send(msg_type_operatefriend, m_seq, szData, strlen(szData));
+    send(msg_type_operatefriend, m_seq, szData, static_cast<int32_t>(strlen(szData)));
 
     LOG_INFO("send to client: userid： %d, cmd=msg_type_operatefriend, data: %s", m_userinfo.userid, szData);
 
@@ -1522,7 +1527,7 @@ void ChatSession::deleteFriend(const std::shared_ptr<TcpConnection>& conn, int32
             snprintf(szData, 256, "{\"userid\":%d, \"type\":5, \"username\": \"%s\"}", m_userinfo.userid,
                      m_userinfo.username.c_str());
             for (auto& iter : targetSessions) {
-                if (iter) iter->send(msg_type_operatefriend, m_seq, szData, strlen(szData));
+                if (iter) iter->send(msg_type_operatefriend, m_seq, szData, static_cast<int32_t>(strlen(szData)));
             }
 
             LOG_INFO("send to client: userid: %d, cmd=msg_type_operatefriend, data: %s", friendid, szData);
@@ -1604,25 +1609,25 @@ void ChatSession::makeUpFriendListInfo(std::string& friendinfo, const std::share
 
     // 解析分组信息，添加好友其他信息
     uint32_t teamCount = jsonRoot.size();
-    int32_t  userid    = 0;
+    // int32_t  userid    = 0;
 
     // std::list<User> friends;
     User currentUserInfo;
     userManager.getUserInfoByUserId(m_userinfo.userid, currentUserInfo);
     User u;
-    for (auto& friendinfo : currentUserInfo.friends) {
+    for (auto& friendEntry : currentUserInfo.friends) {
         for (uint32_t i = 0; i < teamCount; ++i) {
             if (jsonRoot[i]["members"].isNull() || !(jsonRoot[i]["members"]).isArray()) {
                 jsonRoot[i]["members"] = emptyArrayValue;
             }
 
-            if (jsonRoot[i]["teamname"].isNull() || jsonRoot[i]["teamname"].asString() != friendinfo.teamname) continue;
+            if (jsonRoot[i]["teamname"].isNull() || jsonRoot[i]["teamname"].asString() != friendEntry.teamname) continue;
 
             uint32_t memberCount = jsonRoot[i]["members"].size();
 
-            if (!userManager.getUserInfoByUserId(friendinfo.friendid, u)) continue;
+            if (!userManager.getUserInfoByUserId(friendEntry.friendid, u)) continue;
 
-            if (!userManager.getFriendMarknameByUserId(m_userinfo.userid, friendinfo.friendid, markname)) continue;
+            if (!userManager.getFriendMarknameByUserId(m_userinfo.userid, friendEntry.friendid, markname)) continue;
 
             jsonRoot[i]["members"][memberCount]["userid"]      = u.userid;
             jsonRoot[i]["members"][memberCount]["username"]    = u.username;
@@ -1636,8 +1641,8 @@ void ChatSession::makeUpFriendListInfo(std::string& friendinfo, const std::share
             jsonRoot[i]["members"][memberCount]["address"]     = u.address;
             jsonRoot[i]["members"][memberCount]["phonenumber"] = u.phonenumber;
             jsonRoot[i]["members"][memberCount]["mail"]        = u.mail;
-            jsonRoot[i]["members"][memberCount]["clienttype"] = imserver.getUserClientTypeByUserId(friendinfo.friendid);
-            jsonRoot[i]["members"][memberCount]["status"]     = imserver.getUserStatusByUserId(friendinfo.friendid);
+            jsonRoot[i]["members"][memberCount]["clienttype"] = imserver.getUserClientTypeByUserId(friendEntry.friendid);
+            jsonRoot[i]["members"][memberCount]["status"]     = imserver.getUserStatusByUserId(friendEntry.friendid);
             ;
         } // end inner for-loop
 
@@ -1690,7 +1695,7 @@ bool ChatSession::modifyChatMsgLocalTimeToServerTime(const std::string& chatInpu
     }
     delete reader;
 
-    unsigned int now = (unsigned int) time(NULL);
+    unsigned int now = static_cast<unsigned int>(time(NULL));
     // if (JsonRoot["time"].isNull())
     jsonRoot["time"] = now;
 
