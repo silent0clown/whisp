@@ -3,10 +3,12 @@
 #include "log.h"
 // #include "macros.h"
 #include "mysqlx_factory.h"
-#include "mysqlx_pool.h"
-
+// #include "mysqlx_pool.h"
 #include <string.h>
 #include <iostream>
+#include "singleton.h"
+#include "user_manager.h"
+#include "w_mysql/mysql_manager.h"
 #if defined(__linux__)
 #include <dirent.h>
 #include <signal.h>
@@ -120,9 +122,18 @@ int main(int argc, char* argv[])
     // 创建工厂对象
     // WhispConcreteDbConnFactory factory(db_server, db_port, db_user, db_passpwd,
     // db_table, 5);
-    auto factory = std::make_unique<MySQLXFactory>(db_server, db_port, db_user, db_passpwd, db_table);
+    // auto factory = std::make_unique<MySQLXFactory>(db_server, db_port, db_user, db_passpwd, db_table);
 
-    auto pool = std::make_shared<MySQLXPool>(std::move(factory), 5);
+    // auto pool = std::make_shared<MySQLXPool>(std::move(factory), 5);
+    if (!Singleton<CMysqlManager>::Instance().init(db_server.c_str(), db_user.c_str(), db_passpwd.c_str(),
+                                                   db_table.c_str())) {
+        LOG_FATAL("Init mysql failed, please check your database config..............");
+    }
+
+    if (!Singleton<UserManager>::Instance().init(db_server.c_str(), db_user.c_str(), db_passpwd.c_str(),
+                                                 db_table.c_str())) {
+        LOG_FATAL("Init UserManager failed, please check your database config..............");
+    }
 
     // 监听端口
     const char* listenip   = Wconfig.client_config.client_listen_ip.c_str();

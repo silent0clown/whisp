@@ -29,9 +29,11 @@ target_include_directories(db SYSTEM PUBLIC
 
 add_library(crypto SHARED IMPORTED)
 add_library(ssl SHARED IMPORTED)
-add_library(mysqlconn8 SHARED IMPORTED)
+# add_library(mysqlconn8 SHARED IMPORTED)
+add_library(mysqlconn SHARED IMPORTED)
 set_target_properties(crypto PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/openssl/lib/libcrypto.so)
 set_target_properties(ssl PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/openssl/lib/libssl.so)
-set_target_properties(mysqlconn8 PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/mysqlconn/lib/libmysqlcppconn8.so.2.8.0.33)
+# set_target_properties(mysqlconn8 PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/mysqlconn/lib/libmysqlcppconn8.so.2.8.0.33)
+set_target_properties(mysqlconn PROPERTIES IMPORTED_LOCATION ${THIRD_PARTY_PATH}/mysql/lib/libmysqlclient.so.21.2.42)
 
-target_link_libraries(db PRIVATE crypto ssl mysqlconn8 common)
+target_link_libraries(db PRIVATE crypto ssl mysqlconn common)

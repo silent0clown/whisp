@@ -6,7 +6,6 @@
 #include <string.h>
 #include "zlib.h"
 
-// ���֧��ѹ��10M
 #define MAX_COMPRESS_BUF_SIZE 10 * 1024 * 1024
 
 bool ZlibUtil::compressBuf(const char* pSrcBuf, size_t nSrcBufLength, char* pDestBuf, size_t& nDestBufLength)
@@ -14,11 +13,8 @@ bool ZlibUtil::compressBuf(const char* pSrcBuf, size_t nSrcBufLength, char* pDes
     if (pSrcBuf == NULL || nSrcBufLength == 0 || nSrcBufLength > MAX_COMPRESS_BUF_SIZE || pDestBuf == NULL)
         return false;
 
-    // ���㻺������С����Ϊ������ڴ�
-    // ѹ����ĳ����ǲ��ᳬ��nDestBufLength��
     nDestBufLength = compressBound(nSrcBufLength);
 
-    // ѹ��
     int ret = compress((Bytef*) pDestBuf, (uLongf*) &nDestBufLength, (const Bytef*) pSrcBuf, nSrcBufLength);
     if (ret != Z_OK) return false;
 

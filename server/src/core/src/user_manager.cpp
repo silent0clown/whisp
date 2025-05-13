@@ -5,9 +5,10 @@
 #include "user_manager.h"
 #include <stdio.h>
 #include <memory>
+#include <set>
 #include <sstream>
-#include "database_mysql.h"
-#include "json/json.h"
+#include "db_mysql.h"
+// #include "json/reader.h"
 #include "log.h"
 
 UserManager::UserManager() {}
@@ -119,7 +120,7 @@ bool UserManager::addUser(User& u)
              "'%s', '%s', NOW())",
              m_baseUserId.load(), u.username.c_str(), u.nickname.c_str(), u.password.c_str());
     if (!pConn->execute(sql)) {
-        LOGW("insert user error, sql: %s", sql);
+        LOG_WARN("insert user error, sql: %s", sql);
         return false;
     }
     // 设置一些字段的默认值

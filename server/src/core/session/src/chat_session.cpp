@@ -1,6 +1,6 @@
 #include "session/chat_session.h"
 #include "msg.h"
-
+#include "session/user_manager.h"
 /**
  * ChatSession.cpp
  * zhangyl, 2017.03.10
