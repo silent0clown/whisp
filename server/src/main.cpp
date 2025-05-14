@@ -8,6 +8,8 @@
 #include <iostream>
 #include "chat_server.h"
 #include "event_loop.h"
+#include "http_server.h"
+#include "monitor_server.h"
 #include "singleton.h"
 #include "user_manager.h"
 #include "w_mysql/mysql_manager.h"
@@ -139,11 +141,24 @@ int main(int argc, char* argv[])
         LOG_FATAL("Init UserManager failed, please check your database config..............");
     }
 
-    // 监听端口
+    // chat server
     const char* listenip   = Wconfig.client_config.client_listen_ip.c_str();
     short       listenport = Wconfig.client_config.client_listen_port;
     LOG_INFO("[main] Listen Server: %s:%u", listenip, listenport);
     Singleton<ChatServer>::Instance().init(listenip, listenport, &g_mainLoop);
+
+    // monitor server
+    const char* monitorip    = Wconfig.monitor_config.monitor_listen_ip.c_str();
+    short       monitorport  = Wconfig.monitor_config.monitor_listen_port;
+    const char* monitortoken = Wconfig.monitor_config.monitor_token.c_str();
+    LOG_INFO("[main] Monitor Server: %s:%u", monitorip, monitorport);
+    Singleton<MonitorServer>::Instance().init(monitorip, monitorport, &g_mainLoop, monitortoken);
+    // http server
+    const char* httpip   = Wconfig.http_config.http_listen_ip.c_str();
+    short       httpport = Wconfig.http_config.http_listen_port;
+    LOG_INFO("[main] Http Server: %s:%u", httpip, httpport);
+    Singleton<HttpServer>::Instance().init(httpip, httpport, &g_mainLoop);
+
     // 析构
     WhispLog::get_instance().log_uninit();
     std::cout << "[main] log uninit return true" << std::endl;

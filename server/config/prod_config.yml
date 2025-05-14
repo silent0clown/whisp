@@ -16,14 +16,14 @@ http:
 
 # Log configuration
 log:
-  file_dir: "/home/dev1/whisp/server/data/logs/"
+  file_dir: "/home/whisp/server/data/logs/"
   file_name: "whisp_log"
   binary_package: false  # 0 转换为 false，1 为 true
 
 # MySQL configuration
 mysql:
   server_ip: "127.0.0.1"
-  server_port: 6603
-  user: "root"
-  password: "talko_root"
-  database: "talko_server"
+  server_port: 3306
+  user: "chat"
+  password: "123456"
+  database: "chat"
