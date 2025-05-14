@@ -22,20 +22,20 @@
 #endif
 
 #ifndef WIN32
+network::EventLoop g_mainLoop;
+
 void prog_exit(int signo)
 {
     std::cout << "program recv signal [" << signo << "] to exit." << std::endl;
 
-    // Singleton<MonitorServer>::Instance().uninit();
-    // Singleton<HttpServer>::Instance().uninit();
-    // Singleton<ChatServer>::Instance().uninit();
-    // g_mainLoop.quit();
+    Singleton<MonitorServer>::Instance().uninit();
+    Singleton<HttpServer>::Instance().uninit();
+    Singleton<ChatServer>::Instance().uninit();
+    g_mainLoop.quit();
 
-    // CAsyncLog::uninit();
+    WhispLog::get_instance().log_uninit();
 }
 #endif
-
-network::EventLoop g_mainLoop;
 
 // 参数解析
 void parse_arguments(int argc, char* argv[])
@@ -159,8 +159,10 @@ int main(int argc, char* argv[])
     LOG_INFO("[main] Http Server: %s:%u", httpip, httpport);
     Singleton<HttpServer>::Instance().init(httpip, httpport, &g_mainLoop);
 
+    g_mainLoop.loop();
+    LOG_INFO("[main] Event loop exit, uninit all modules.");
     // 析构
-    WhispLog::get_instance().log_uninit();
+    // WhispLog::get_instance().log_uninit();
     std::cout << "[main] log uninit return true" << std::endl;
 
     return 0;
