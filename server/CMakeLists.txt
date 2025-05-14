@@ -104,7 +104,7 @@ add_subdirectory(src)
 # 如果启用测试，添加测试子目录
 option(BUILD_TESTS "Build tests" OFF)
 if (BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(tests)
 endif()
 
 # 安装规则
